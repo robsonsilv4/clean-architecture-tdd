@@ -16,7 +16,7 @@ dependencies:
   flutter_bloc: ^0.21.0
   equatable: ^0.4.0
   dartz: ^0.8.6
-  connectivity: ^0.4.3+7
+  data_connection_checker: ^0.3.4
   http: ^0.12.0+2
   shared_preferences: ^0.5.3+4
 
