@@ -9,7 +9,7 @@ void main() {
     inputConverter = InputConverter();
   });
 
-  group('stringToUnsignedInt', () async {
+  group('stringToUnsignedInt', () {
     test(
       'should return an integer when the string represents an unsigned integer',
       () async {
