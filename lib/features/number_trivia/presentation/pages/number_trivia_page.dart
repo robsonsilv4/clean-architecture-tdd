@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' as fb;
 
 import '../../../../injection_container.dart';
 import '../bloc/bloc.dart';
@@ -19,16 +19,16 @@ class NumberTriviaPage extends StatelessWidget {
     );
   }
 
-  BlocProvider<NumberTriviaBloc> buildBody(BuildContext context) {
-    return BlocProvider(
-      builder: (_) => sl<NumberTriviaBloc>(),
+  fb.BlocProvider<NumberTriviaBloc> buildBody(BuildContext context) {
+    return fb.BlocProvider(
+      create: (_) => sl<NumberTriviaBloc>(),
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               SizedBox(height: 10.0),
-              BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
+              fb.BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
                 builder: (context, state) {
                   if (state is Empty) {
                     return MessageDisplay(

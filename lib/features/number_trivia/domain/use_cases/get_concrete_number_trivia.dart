@@ -10,7 +10,10 @@ import '../repositories/number_trivia_repository.dart';
 class Params extends Equatable {
   final int number;
 
-  Params({@required this.number}) : super([number]);
+  Params({@required this.number});
+
+  @override
+  List<Object> get props => [number];
 }
 
 class GetConcreteNumberTrivia implements UseCase<NumberTrivia, Params> {
