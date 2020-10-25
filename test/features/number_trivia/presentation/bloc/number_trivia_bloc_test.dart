@@ -33,6 +33,10 @@ void main() {
     );
   });
 
+  tearDown(() {
+    bloc.close();
+  });
+
   test('initial state should be Empty', () {
     expect(bloc.initialState, equals(Empty()));
   });
@@ -53,7 +57,7 @@ void main() {
       () async {
         setUpMockInputConverterSuccess();
 
-        bloc.dispatch(GetTriviaForConcreteNumber(tNumberString));
+        bloc.add(GetTriviaForConcreteNumber(tNumberString));
         await untilCalled(mockInputConverter.stringToUnsignedInteger(any));
 
         verify(
@@ -73,12 +77,9 @@ void main() {
         Empty(),
         Error(message: INVALID_INPUT_FAILURE_MESSAGE),
       ];
-      expectLater(
-        bloc.state,
-        emitsInOrder(expected),
-      );
+      expectLater(bloc, emitsInOrder(expected));
 
-      bloc.dispatch(GetTriviaForConcreteNumber(tNumberString));
+      bloc.add(GetTriviaForConcreteNumber(tNumberString));
     });
 
     test(
@@ -89,7 +90,7 @@ void main() {
           (_) async => Right(tNumberTrivia),
         );
 
-        bloc.dispatch(GetTriviaForConcreteNumber(tNumberString));
+        bloc.add(GetTriviaForConcreteNumber(tNumberString));
         await untilCalled(mockGetConcreteNumberTrivia(any));
 
         verify(mockGetConcreteNumberTrivia(Params(number: tNumberParded)));
@@ -109,9 +110,9 @@ void main() {
           Loading(),
           Loaded(trivia: tNumberTrivia),
         ];
-        expectLater(bloc.state, emitsInOrder(expected));
+        expectLater(bloc, emitsInOrder(expected));
 
-        bloc.dispatch(GetTriviaForConcreteNumber(tNumberString));
+        bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
     );
 
@@ -128,9 +129,9 @@ void main() {
           Loading(),
           Error(message: SERVER_FAILURE_MESSAGE),
         ];
-        expectLater(bloc.state, emitsInOrder(expected));
+        expectLater(bloc, emitsInOrder(expected));
 
-        bloc.dispatch(GetTriviaForConcreteNumber(tNumberString));
+        bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
     );
 
@@ -148,9 +149,9 @@ void main() {
           Loading(),
           Error(message: CACHE_FAILURE_MESSAGE),
         ];
-        expectLater(bloc.state, emitsInOrder(expected));
+        expectLater(bloc, emitsInOrder(expected));
 
-        bloc.dispatch(GetTriviaForConcreteNumber(tNumberString));
+        bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
     );
   });
@@ -165,7 +166,7 @@ void main() {
           (_) async => Right(tNumberTrivia),
         );
 
-        bloc.dispatch(GetTriviaForRandomNumber());
+        bloc.add(GetTriviaForRandomNumber());
         await untilCalled(mockGetRandomNumberTrivia(any));
 
         verify(mockGetRandomNumberTrivia(NoParams()));
@@ -184,9 +185,9 @@ void main() {
           Loading(),
           Loaded(trivia: tNumberTrivia),
         ];
-        expectLater(bloc.state, emitsInOrder(expected));
+        expectLater(bloc, emitsInOrder(expected));
 
-        bloc.dispatch(GetTriviaForRandomNumber());
+        bloc.add(GetTriviaForRandomNumber());
       },
     );
 
@@ -202,9 +203,9 @@ void main() {
           Loading(),
           Error(message: SERVER_FAILURE_MESSAGE),
         ];
-        expectLater(bloc.state, emitsInOrder(expected));
+        expectLater(bloc, emitsInOrder(expected));
 
-        bloc.dispatch(GetTriviaForRandomNumber());
+        bloc.add(GetTriviaForRandomNumber());
       },
     );
 
@@ -221,9 +222,9 @@ void main() {
           Loading(),
           Error(message: CACHE_FAILURE_MESSAGE),
         ];
-        expectLater(bloc.state, emitsInOrder(expected));
+        expectLater(bloc, emitsInOrder(expected));
 
-        bloc.dispatch(GetTriviaForRandomNumber());
+        bloc.add(GetTriviaForRandomNumber());
       },
     );
   });
