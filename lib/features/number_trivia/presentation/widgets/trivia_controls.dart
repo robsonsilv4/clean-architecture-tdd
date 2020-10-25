@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' as fb;
 
 import '../bloc/bloc.dart';
 
@@ -60,14 +60,14 @@ class _TriviaControlsState extends State<TriviaControls> {
 
   void dispatchConcrete() {
     controller.clear();
-    BlocProvider.of<NumberTriviaBloc>(context).dispatch(
+    fb.BlocProvider.of<NumberTriviaBloc>(context).add(
       GetTriviaForConcreteNumber(inputString),
     );
   }
 
   void dispatchRandom() {
     controller.clear();
-    BlocProvider.of<NumberTriviaBloc>(context).dispatch(
+    fb.BlocProvider.of<NumberTriviaBloc>(context).add(
       GetTriviaForRandomNumber(),
     );
   }
