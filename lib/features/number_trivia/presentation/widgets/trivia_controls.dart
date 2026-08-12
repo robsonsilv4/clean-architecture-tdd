@@ -5,7 +5,7 @@ import '../bloc/bloc.dart';
 
 class TriviaControls extends StatefulWidget {
   const TriviaControls({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -14,7 +14,7 @@ class TriviaControls extends StatefulWidget {
 
 class _TriviaControlsState extends State<TriviaControls> {
   final controller = TextEditingController();
-  String inputString;
+  String? inputString;
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +38,18 @@ class _TriviaControlsState extends State<TriviaControls> {
         Row(
           children: [
             Expanded(
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text('Search'),
-                color: Theme.of(context).accentColor,
-                textTheme: ButtonTextTheme.primary,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                ),
                 onPressed: dispatchConcrete,
               ),
             ),
             SizedBox(width: 10.0),
             Expanded(
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text('Get random trivia'),
                 onPressed: dispatchRandom,
               ),
@@ -61,7 +63,7 @@ class _TriviaControlsState extends State<TriviaControls> {
   void dispatchConcrete() {
     controller.clear();
     fb.BlocProvider.of<NumberTriviaBloc>(context).add(
-      GetTriviaForConcreteNumber(inputString),
+      GetTriviaForConcreteNumber(inputString ?? ''),
     );
   }
 

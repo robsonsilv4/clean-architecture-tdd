@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart' as fb;
 
 import '../../../../injection_container.dart';
 import '../bloc/bloc.dart';
-import '../widgets/message_display.dart';
 import '../widgets/widgets.dart';
 
 class NumberTriviaPage extends StatelessWidget {
