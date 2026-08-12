@@ -29,20 +29,31 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
           return;
         case Right(value: final integer):
           emit(Loading());
-          final failureOrTrivia = await getConcreteNumberTrivia(
-            Params(number: integer),
+          await _emitLoadedOrError(
+            () => getConcreteNumberTrivia(Params(number: integer)),
+            emit,
           );
-          emit(_eitherLoadedOrErrorState(failureOrTrivia));
       }
     });
 
     on<GetTriviaForRandomNumber>((event, emit) async {
       emit(Loading());
-      final failureOrTrivia = await getRandomNumberTrivia(
-        NoParams(),
+      await _emitLoadedOrError(
+        () => getRandomNumberTrivia(NoParams()),
+        emit,
       );
-      emit(_eitherLoadedOrErrorState(failureOrTrivia));
     });
+  }
+
+  Future<void> _emitLoadedOrError(
+    Future<Either<Failure, NumberTrivia>> Function() load,
+    Emitter<NumberTriviaState> emit,
+  ) async {
+    try {
+      emit(_eitherLoadedOrErrorState(await load()));
+    } on Exception {
+      emit(Error(message: serverFailureMessage));
+    }
   }
 
   final GetConcreteNumberTrivia getConcreteNumberTrivia;

@@ -169,6 +169,24 @@ should emit [Loading, Error] with a proper message
         bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
     );
+
+    test(
+      'should emit [Loading, Error] when the use case throws an exception',
+      () async {
+        setUpMockInputConverterSuccess();
+        when(() => mockGetConcreteNumberTrivia(any())).thenThrow(
+          Exception('unexpected'),
+        );
+
+        final expected = [
+          Loading(),
+          Error(message: serverFailureMessage),
+        ];
+        unawaited(expectLater(bloc.stream, emitsInOrder(expected)));
+
+        bloc.add(GetTriviaForConcreteNumber(tNumberString));
+      },
+    );
   });
 
   group('GetTriviaForRandomNumber', () {
@@ -234,6 +252,23 @@ should emit [Loading, Error] with a proper message
         final expected = [
           Loading(),
           Error(message: cacheFailureMessage),
+        ];
+        unawaited(expectLater(bloc.stream, emitsInOrder(expected)));
+
+        bloc.add(GetTriviaForRandomNumber());
+      },
+    );
+
+    test(
+      'should emit [Loading, Error] when the use case throws an exception',
+      () async {
+        when(() => mockGetRandomNumberTrivia(any())).thenThrow(
+          Exception('unexpected'),
+        );
+
+        final expected = [
+          Loading(),
+          Error(message: serverFailureMessage),
         ];
         unawaited(expectLater(bloc.stream, emitsInOrder(expected)));
 
