@@ -14,6 +14,7 @@ abstract class NumberTriviaLocalDataSource {
 
 class NumberTriviaLocalDataSourceImpl implements NumberTriviaLocalDataSource {
   NumberTriviaLocalDataSourceImpl({required this.sharedPreferences});
+
   final SharedPreferences sharedPreferences;
 
   @override

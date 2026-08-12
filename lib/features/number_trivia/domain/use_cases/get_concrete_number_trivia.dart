@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 
 class Params extends Equatable {
   const Params({required this.number});
+
   final int number;
 
   @override
@@ -15,6 +16,7 @@ class Params extends Equatable {
 
 class GetConcreteNumberTrivia implements UseCase<NumberTrivia, Params> {
   GetConcreteNumberTrivia(this.repository);
+
   final NumberTriviaRepository repository;
 
   @override

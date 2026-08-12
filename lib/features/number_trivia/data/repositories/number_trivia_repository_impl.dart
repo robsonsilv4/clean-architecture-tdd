@@ -16,6 +16,7 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
     required this.localDataSource,
     required this.networkInfo,
   });
+
   final NumberTriviaRemoteDataSource remoteDataSource;
   final NumberTriviaLocalDataSource localDataSource;
   final NetworkInfo networkInfo;

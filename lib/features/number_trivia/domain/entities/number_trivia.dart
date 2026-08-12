@@ -5,6 +5,7 @@ class NumberTrivia extends Equatable {
     required this.text,
     required this.number,
   });
+
   final String text;
   final int number;
 

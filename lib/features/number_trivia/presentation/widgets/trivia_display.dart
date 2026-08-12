@@ -6,6 +6,7 @@ class TriviaDisplay extends StatelessWidget {
     required this.numberTrivia,
     super.key,
   });
+
   final NumberTrivia numberTrivia;
 
   @override

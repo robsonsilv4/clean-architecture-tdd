@@ -5,6 +5,7 @@ class MessageDisplay extends StatelessWidget {
     required this.message,
     super.key,
   });
+
   final String message;
 
   @override

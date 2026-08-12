@@ -7,6 +7,7 @@ abstract class NumberTriviaEvent extends Equatable {
 
 class GetTriviaForConcreteNumber extends NumberTriviaEvent {
   GetTriviaForConcreteNumber(this.numberString);
+
   final String numberString;
 
   @override

@@ -11,6 +11,7 @@ abstract class NumberTriviaRemoteDataSource {
 
 class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
   NumberTriviaRemoteDataSourceImpl({required this.client});
+
   final http.Client client;
 
   Future<NumberTriviaModel> _getTriviaFromUrl(String url) async {
