@@ -14,7 +14,7 @@ void main() {
     test(
       'should return an integer when the string represents an unsigned integer',
       () async {
-        final string = '123';
+        const string = '123';
 
         final result = inputConverter.stringToUnsignedInteger(string);
 
@@ -25,7 +25,7 @@ void main() {
     test(
       'should return a failure when the string is not an integer',
       () async {
-        final string = 'abc';
+        const string = 'abc';
 
         final result = inputConverter.stringToUnsignedInteger(string);
 
@@ -36,7 +36,7 @@ void main() {
     test(
       'should return a failure when the string is a negative integer',
       () async {
-        final string = '-123';
+        const string = '-123';
 
         final result = inputConverter.stringToUnsignedInteger(string);
 

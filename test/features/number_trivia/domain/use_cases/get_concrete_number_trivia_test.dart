@@ -18,16 +18,17 @@ void main() {
     useCase = GetConcreteNumberTrivia(mockNumberTriviaRepository);
   });
 
-  final tNumber = 1;
-  final tNumberTrivia = NumberTrivia(number: 1, text: 'test');
+  const tNumber = 1;
+  const tNumberTrivia = NumberTrivia(number: 1, text: 'test');
 
   test('should get trivia for the number from the repository', () async {
-    when(() => mockNumberTriviaRepository.getConcreteNumberTrivia(any()))
-        .thenAnswer((_) async => Right(tNumberTrivia));
+    when(
+      () => mockNumberTriviaRepository.getConcreteNumberTrivia(any()),
+    ).thenAnswer((_) async => const Right(tNumberTrivia));
 
-    final result = await useCase(Params(number: tNumber));
+    final result = await useCase(const Params(number: tNumber));
 
-    expect(result, Right<Failure, NumberTrivia>(tNumberTrivia));
+    expect(result, const Right<Failure, NumberTrivia>(tNumberTrivia));
     verify(() => mockNumberTriviaRepository.getConcreteNumberTrivia(tNumber));
     verifyNoMoreInteractions(mockNumberTriviaRepository);
   });

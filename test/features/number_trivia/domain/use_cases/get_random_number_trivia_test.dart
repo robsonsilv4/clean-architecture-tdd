@@ -19,15 +19,16 @@ void main() {
     useCase = GetRandomNumberTrivia(mockNumberTriviaRepository);
   });
 
-  final tNumberTrivia = NumberTrivia(number: 1, text: 'test');
+  const tNumberTrivia = NumberTrivia(number: 1, text: 'test');
 
   test('should get trivia from the repository', () async {
-    when(() => mockNumberTriviaRepository.getRandomNumberTrivia())
-        .thenAnswer((_) async => Right(tNumberTrivia));
+    when(
+      () => mockNumberTriviaRepository.getRandomNumberTrivia(),
+    ).thenAnswer((_) async => const Right(tNumberTrivia));
 
     final result = await useCase(NoParams());
 
-    expect(result, Right<Failure, NumberTrivia>(tNumberTrivia));
+    expect(result, const Right<Failure, NumberTrivia>(tNumberTrivia));
     verify(() => mockNumberTriviaRepository.getRandomNumberTrivia());
     verifyNoMoreInteractions(mockNumberTriviaRepository);
   });

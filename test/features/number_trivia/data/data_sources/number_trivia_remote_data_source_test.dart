@@ -49,20 +49,22 @@ void main() {
   }
 
   group('getConcreteNumberTrivia', () {
-    final tNumber = 1;
+    const tNumber = 1;
     final tNumberTriviaModel = NumberTriviaModel.fromJson(
       json.decode(
-        fixture('trivia.json'),
-      ) as Map<String, dynamic>,
+            fixture('trivia.json'),
+          )
+          as Map<String, dynamic>,
     );
 
     test(
-      '''should perform a GET request on a URL with number
+      '''
+should perform a GET request on a URL with number
       being the endpoint and with application/json header''',
       () async {
         setUpMockHttpClientSucess200();
 
-        remoteDataSource.getConcreteNumberTrivia(tNumber);
+        await remoteDataSource.getConcreteNumberTrivia(tNumber);
 
         verify(
           () => mockHttpClient.get(
@@ -93,7 +95,10 @@ void main() {
 
         final call = remoteDataSource.getConcreteNumberTrivia;
 
-        expect(() => call(tNumber), throwsA(TypeMatcher<ServerException>()));
+        expect(
+          () => call(tNumber),
+          throwsA(const TypeMatcher<ServerException>()),
+        );
       },
     );
   });
@@ -101,17 +106,19 @@ void main() {
   group('getRandomNumberTrivia', () {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(
       json.decode(
-        fixture('trivia.json'),
-      ) as Map<String, dynamic>,
+            fixture('trivia.json'),
+          )
+          as Map<String, dynamic>,
     );
 
     test(
-      '''should perform a GET request on a URL with number
+      '''
+should perform a GET request on a URL with number
       being the endpoint and with application/json header''',
       () async {
         setUpMockHttpClientSucess200();
 
-        remoteDataSource.getRandomNumberTrivia();
+        await remoteDataSource.getRandomNumberTrivia();
 
         verify(
           () => mockHttpClient.get(
@@ -142,7 +149,7 @@ void main() {
 
         final call = remoteDataSource.getRandomNumberTrivia;
 
-        expect(() => call(), throwsA(TypeMatcher<ServerException>()));
+        expect(call, throwsA(const TypeMatcher<ServerException>()));
       },
     );
   });
