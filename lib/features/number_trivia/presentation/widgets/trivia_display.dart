@@ -1,25 +1,23 @@
+import 'package:clean_architecture_tdd/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/number_trivia.dart';
-
 class TriviaDisplay extends StatelessWidget {
-  final NumberTrivia numberTrivia;
-
   const TriviaDisplay({
-    Key? key,
     required this.numberTrivia,
-  }) : super(key: key);
+    super.key,
+  });
+  final NumberTrivia numberTrivia;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height / 3,
       child: Column(
         children: [
           Text(
             numberTrivia.number.toString(),
-            style: TextStyle(
-              fontSize: 50.0,
+            style: const TextStyle(
+              fontSize: 50,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -29,8 +27,8 @@ class TriviaDisplay extends StatelessWidget {
                 child: Text(
                   numberTrivia.text,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 25.0,
+                  style: const TextStyle(
+                    fontSize: 25,
                   ),
                 ),
               ),

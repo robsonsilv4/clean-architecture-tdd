@@ -6,9 +6,8 @@ abstract class NumberTriviaEvent extends Equatable {
 }
 
 class GetTriviaForConcreteNumber extends NumberTriviaEvent {
-  final String numberString;
-
   GetTriviaForConcreteNumber(this.numberString);
+  final String numberString;
 
   @override
   List<Object> get props => [numberString];

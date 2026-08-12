@@ -1,24 +1,19 @@
 import 'package:bloc/bloc.dart';
+import 'package:clean_architecture_tdd/core/errors/failures.dart';
+import 'package:clean_architecture_tdd/core/use_cases/use_case.dart';
+import 'package:clean_architecture_tdd/core/utils/input_converter.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/domain/entities/number_trivia.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/domain/use_cases/get_concrete_number_trivia.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/domain/use_cases/get_random_number_trivia.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/presentation/bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/errors/failures.dart';
-import '../../../../core/use_cases/use_case.dart';
-import '../../../../core/utils/input_converter.dart';
-import '../../domain/entities/number_trivia.dart';
-import '../../domain/use_cases/get_concrete_number_trivia.dart';
-import '../../domain/use_cases/get_random_number_trivia.dart';
-import 'bloc.dart';
-
-const String SERVER_FAILURE_MESSAGE = 'Server failure.';
-const String CACHE_FAILURE_MESSAGE = 'Cache failure.';
-const String INVALID_INPUT_FAILURE_MESSAGE =
+const String serverFailureMessage = 'Server failure.';
+const String cacheFailureMessage = 'Cache failure.';
+const String invalidInputFailureMessage =
     'Invalid input - The number must be a positive integer or zero.';
 
 class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
-  final GetConcreteNumberTrivia getConcreteNumberTrivia;
-  final GetRandomNumberTrivia getRandomNumberTrivia;
-  final InputConverter inputConverter;
-
   NumberTriviaBloc({
     required this.getConcreteNumberTrivia,
     required this.getRandomNumberTrivia,
@@ -28,16 +23,17 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
       final inputEither = inputConverter.stringToUnsignedInteger(
         event.numberString,
       );
-      inputEither.fold(
-        (failure) => emit(Error(message: INVALID_INPUT_FAILURE_MESSAGE)),
-        (integer) async {
+      switch (inputEither) {
+        case Left():
+          emit(Error(message: invalidInputFailureMessage));
+          return;
+        case Right(value: final integer):
           emit(Loading());
           final failureOrTrivia = await getConcreteNumberTrivia(
             Params(number: integer),
           );
           emit(_eitherLoadedOrErrorState(failureOrTrivia));
-        },
-      );
+      }
     });
 
     on<GetTriviaForRandomNumber>((event, emit) async {
@@ -48,6 +44,9 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
       emit(_eitherLoadedOrErrorState(failureOrTrivia));
     });
   }
+  final GetConcreteNumberTrivia getConcreteNumberTrivia;
+  final GetRandomNumberTrivia getRandomNumberTrivia;
+  final InputConverter inputConverter;
 
   NumberTriviaState _eitherLoadedOrErrorState(
     Either<Failure, NumberTrivia> failureOrTrivia,
@@ -61,13 +60,10 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
   }
 
   String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
-        return SERVER_FAILURE_MESSAGE;
-      case CacheFailure:
-        return CACHE_FAILURE_MESSAGE;
-      default:
-        return 'Unexpected error.';
-    }
+    return switch (failure) {
+      ServerFailure() => serverFailureMessage,
+      CacheFailure() => cacheFailureMessage,
+      _ => 'Unexpected error.',
+    };
   }
 }

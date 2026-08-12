@@ -1,6 +1,5 @@
+import 'package:clean_architecture_tdd/core/errors/failures.dart';
 import 'package:dartz/dartz.dart';
-
-import '../errors/failures.dart';
 
 class InvalidInputFailure extends Failure {}
 
@@ -9,7 +8,7 @@ class InputConverter {
     try {
       final integer = int.parse(string);
       if (integer < 0) {
-        throw FormatException();
+        throw const FormatException();
       }
       return Right(integer);
     } on FormatException {

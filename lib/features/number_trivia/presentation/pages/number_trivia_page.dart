@@ -1,16 +1,17 @@
+import 'package:clean_architecture_tdd/features/number_trivia/presentation/bloc/bloc.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/presentation/widgets/widgets.dart';
+import 'package:clean_architecture_tdd/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' as fb;
 
-import '../../../../injection_container.dart';
-import '../bloc/bloc.dart';
-import '../widgets/widgets.dart';
-
 class NumberTriviaPage extends StatelessWidget {
+  const NumberTriviaPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Number Trivia'),
+        title: const Text('Number Trivia'),
       ),
       body: SingleChildScrollView(
         child: buildBody(context),
@@ -23,18 +24,18 @@ class NumberTriviaPage extends StatelessWidget {
       create: (_) => sl<NumberTriviaBloc>(),
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10),
               fb.BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
                 builder: (context, state) {
                   if (state is Empty) {
-                    return MessageDisplay(
+                    return const MessageDisplay(
                       message: 'Start searching...',
                     );
                   } else if (state is Loading) {
-                    return LoadingWidget();
+                    return const LoadingWidget();
                   } else if (state is Loaded) {
                     return TriviaDisplay(
                       numberTrivia: state.trivia,
@@ -44,13 +45,13 @@ class NumberTriviaPage extends StatelessWidget {
                       message: state.message,
                     );
                   }
-                  return MessageDisplay(
+                  return const MessageDisplay(
                     message: 'An error has occurred.',
                   );
                 },
               ),
-              SizedBox(height: 20.0),
-              TriviaControls(),
+              const SizedBox(height: 20),
+              const TriviaControls(),
             ],
           ),
         ),
