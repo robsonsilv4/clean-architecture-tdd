@@ -24,7 +24,7 @@ void main() {
 
   group('getLastNumberTrivia', () {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(
-      json.decode(fixture('trivia_cached.json')),
+      json.decode(fixture('trivia_cached.json')) as Map<String, dynamic>,
     );
 
     test(

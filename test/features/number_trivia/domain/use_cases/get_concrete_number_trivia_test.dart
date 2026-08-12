@@ -1,3 +1,4 @@
+import 'package:clean_architecture_tdd/core/errors/failures.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/domain/use_cases/get_concrete_number_trivia.dart';
@@ -26,7 +27,7 @@ void main() {
 
     final result = await useCase(Params(number: tNumber));
 
-    expect(result, Right(tNumberTrivia));
+    expect(result, Right<Failure, NumberTrivia>(tNumberTrivia));
     verify(() => mockNumberTriviaRepository.getConcreteNumberTrivia(tNumber));
     verifyNoMoreInteractions(mockNumberTriviaRepository);
   });

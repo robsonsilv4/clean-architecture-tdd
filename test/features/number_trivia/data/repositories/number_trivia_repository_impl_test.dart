@@ -5,6 +5,7 @@ import 'package:clean_architecture_tdd/features/number_trivia/data/data_sources/
 import 'package:clean_architecture_tdd/features/number_trivia/data/data_sources/number_trivia_remote_data_source.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/data/models/number_trivia_model.dart';
 import 'package:clean_architecture_tdd/features/number_trivia/data/repositories/number_trivia_repository_impl.dart';
+import 'package:clean_architecture_tdd/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -92,7 +93,7 @@ void main() {
           final result = await repositoryImpl.getConcreteNumberTrivia(tNumber);
 
           verify(() => mockRemoteDataSource.getConcreteNumberTrivia(tNumber));
-          expect(result, equals(Right(tNumberTrivia)));
+          expect(result, equals(Right<Failure, NumberTrivia>(tNumberTrivia)));
         },
       );
 
@@ -124,7 +125,7 @@ void main() {
 
           verify(() => mockRemoteDataSource.getConcreteNumberTrivia(tNumber));
           verifyZeroInteractions(mockLocalDataSource);
-          expect(result, equals(Left(ServerFailure())));
+          expect(result, equals(Left<Failure, NumberTrivia>(ServerFailure())));
         },
       );
     });
@@ -142,7 +143,7 @@ void main() {
 
         verifyZeroInteractions(mockRemoteDataSource);
         verify(() => mockLocalDataSource.getLastNumberTrivia());
-        expect(result, equals(Right(tNumberTrivia)));
+        expect(result, equals(Right<Failure, NumberTrivia>(tNumberTrivia)));
       });
 
       test('should return cache failure when there is no cached present',
@@ -155,7 +156,7 @@ void main() {
 
         verifyZeroInteractions(mockRemoteDataSource);
         verify(() => mockLocalDataSource.getLastNumberTrivia());
-        expect(result, equals(Left(CacheFailure())));
+        expect(result, equals(Left<Failure, NumberTrivia>(CacheFailure())));
       });
     });
   });
@@ -190,7 +191,7 @@ void main() {
           final result = await repositoryImpl.getRandomNumberTrivia();
 
           verify(() => mockRemoteDataSource.getRandomNumberTrivia());
-          expect(result, equals(Right(tNumberTrivia)));
+          expect(result, equals(Right<Failure, NumberTrivia>(tNumberTrivia)));
         },
       );
 
@@ -221,7 +222,7 @@ void main() {
 
           verify(() => mockRemoteDataSource.getRandomNumberTrivia());
           verifyZeroInteractions(mockLocalDataSource);
-          expect(result, equals(Left(ServerFailure())));
+          expect(result, equals(Left<Failure, NumberTrivia>(ServerFailure())));
         },
       );
     });
@@ -239,7 +240,7 @@ void main() {
 
         verifyZeroInteractions(mockRemoteDataSource);
         verify(() => mockLocalDataSource.getLastNumberTrivia());
-        expect(result, equals(Right(tNumberTrivia)));
+        expect(result, equals(Right<Failure, NumberTrivia>(tNumberTrivia)));
       });
 
       test('should return cache failure when there is no cached present',
@@ -252,7 +253,7 @@ void main() {
 
         verifyZeroInteractions(mockRemoteDataSource);
         verify(() => mockLocalDataSource.getLastNumberTrivia());
-        expect(result, equals(Left(CacheFailure())));
+        expect(result, equals(Left<Failure, NumberTrivia>(CacheFailure())));
       });
     });
   });

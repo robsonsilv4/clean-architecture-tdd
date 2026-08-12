@@ -16,7 +16,8 @@ void main() {
   group('fromJson', () {
     test('should return a valid model when the JSON number is a interger',
         () async {
-      final Map<String, dynamic> jsonMap = json.decode(fixture('trivia.json'));
+      final Map<String, dynamic> jsonMap =
+          json.decode(fixture('trivia.json')) as Map<String, dynamic>;
       final result = NumberTriviaModel.fromJson(jsonMap);
       expect(result, tNumberTriviaModel);
     });
@@ -25,7 +26,7 @@ void main() {
         'should return a valid model when the JSON number is regarded as a double',
         () async {
       final Map<String, dynamic> jsonMap =
-          json.decode(fixture('trivia_double.json'));
+          json.decode(fixture('trivia_double.json')) as Map<String, dynamic>;
       final result = NumberTriviaModel.fromJson(jsonMap);
       expect(result, tNumberTriviaModel);
     });

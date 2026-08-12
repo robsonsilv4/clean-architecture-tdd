@@ -53,7 +53,7 @@ void main() {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(
       json.decode(
         fixture('trivia.json'),
-      ),
+      ) as Map<String, dynamic>,
     );
 
     test(
@@ -102,7 +102,7 @@ void main() {
     final tNumberTriviaModel = NumberTriviaModel.fromJson(
       json.decode(
         fixture('trivia.json'),
-      ),
+      ) as Map<String, dynamic>,
     );
 
     test(
