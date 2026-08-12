@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:clean_architecture_tdd/core/errors/exceptions.dart';
@@ -48,6 +49,24 @@ void main() {
     );
   }
 
+  void setUpMockHttpClientNetworkError() {
+    when(
+      () => mockHttpClient.get(
+        any(),
+        headers: any(named: 'headers'),
+      ),
+    ).thenThrow(http.ClientException('Connection failed'));
+  }
+
+  void setUpMockHttpClientTimeout() {
+    when(
+      () => mockHttpClient.get(
+        any(),
+        headers: any(named: 'headers'),
+      ),
+    ).thenThrow(TimeoutException('timed out'));
+  }
+
   group('getConcreteNumberTrivia', () {
     const tNumber = 1;
     final tNumberTriviaModel = NumberTriviaModel.fromJson(
@@ -68,7 +87,7 @@ should perform a GET request on a URL with number
 
         verify(
           () => mockHttpClient.get(
-            Uri.parse('http://numbersapi.com/$tNumber'),
+            Uri.parse('http://number-trivia.com/$tNumber?json'),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -101,6 +120,34 @@ should perform a GET request on a URL with number
         );
       },
     );
+
+    test(
+      'should throw a server exception when the connection fails',
+      () async {
+        setUpMockHttpClientNetworkError();
+
+        final call = remoteDataSource.getConcreteNumberTrivia;
+
+        expect(
+          () => call(tNumber),
+          throwsA(const TypeMatcher<ServerException>()),
+        );
+      },
+    );
+
+    test(
+      'should throw a server exception when the request times out',
+      () async {
+        setUpMockHttpClientTimeout();
+
+        final call = remoteDataSource.getConcreteNumberTrivia;
+
+        expect(
+          () => call(tNumber),
+          throwsA(const TypeMatcher<ServerException>()),
+        );
+      },
+    );
   });
 
   group('getRandomNumberTrivia', () {
@@ -122,7 +169,7 @@ should perform a GET request on a URL with number
 
         verify(
           () => mockHttpClient.get(
-            Uri.parse('http://numbersapi.com/random'),
+            Uri.parse('http://number-trivia.com/random?json'),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -146,6 +193,28 @@ should perform a GET request on a URL with number
       'should throw a server exception when the response code is 404 or other',
       () async {
         setUpMockHttpClientFailure404();
+
+        final call = remoteDataSource.getRandomNumberTrivia;
+
+        expect(call, throwsA(const TypeMatcher<ServerException>()));
+      },
+    );
+
+    test(
+      'should throw a server exception when the connection fails',
+      () async {
+        setUpMockHttpClientNetworkError();
+
+        final call = remoteDataSource.getRandomNumberTrivia;
+
+        expect(call, throwsA(const TypeMatcher<ServerException>()));
+      },
+    );
+
+    test(
+      'should throw a server exception when the request times out',
+      () async {
+        setUpMockHttpClientTimeout();
 
         final call = remoteDataSource.getRandomNumberTrivia;
 
