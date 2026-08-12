@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../models/number_trivia_model.dart';
@@ -14,11 +13,11 @@ abstract class NumberTriviaRemoteDataSource {
 class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
   final http.Client client;
 
-  NumberTriviaRemoteDataSourceImpl({@required this.client});
+  NumberTriviaRemoteDataSourceImpl({required this.client});
 
   Future<NumberTriviaModel> _getTriviaFromUrl(String url) async {
     final response = await client.get(
-      url,
+      Uri.parse(url),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -26,7 +25,7 @@ class NumberTriviaRemoteDataSourceImpl implements NumberTriviaRemoteDataSource {
     if (response.statusCode == 200) {
       return NumberTriviaModel.fromJson(json.decode(response.body));
     } else {
-      throw ServerExpection();
+      throw ServerException();
     }
   }
 
