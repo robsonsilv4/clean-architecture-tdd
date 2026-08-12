@@ -7,7 +7,7 @@ import 'package:clean_architecture_tdd/features/number_trivia/domain/use_cases/g
 import 'package:clean_architecture_tdd/features/number_trivia/presentation/bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockGetConcreteNumberTrivia extends Mock
     implements GetConcreteNumberTrivia {}
@@ -17,10 +17,15 @@ class MockGetRandomNumberTrivia extends Mock implements GetRandomNumberTrivia {}
 class MockInputConverter extends Mock implements InputConverter {}
 
 void main() {
-  MockGetConcreteNumberTrivia mockGetConcreteNumberTrivia;
-  MockGetRandomNumberTrivia mockGetRandomNumberTrivia;
-  MockInputConverter mockInputConverter;
-  NumberTriviaBloc bloc;
+  setUpAll(() {
+    registerFallbackValue(Params(number: 0));
+    registerFallbackValue(NoParams());
+  });
+
+  late MockGetConcreteNumberTrivia mockGetConcreteNumberTrivia;
+  late MockGetRandomNumberTrivia mockGetRandomNumberTrivia;
+  late MockInputConverter mockInputConverter;
+  late NumberTriviaBloc bloc;
 
   setUp(() {
     mockGetConcreteNumberTrivia = MockGetConcreteNumberTrivia();
@@ -38,7 +43,7 @@ void main() {
   });
 
   test('initial state should be Empty', () {
-    expect(bloc.initialState, equals(Empty()));
+    expect(bloc.state, equals(Empty()));
   });
 
   group('GetTriviaForConcreteNumber', () {
@@ -47,7 +52,7 @@ void main() {
     final tNumberTrivia = NumberTrivia(text: 'Test trivia.', number: 1);
 
     void setUpMockInputConverterSuccess() => when(
-          mockInputConverter.stringToUnsignedInteger(any),
+          () => mockInputConverter.stringToUnsignedInteger(any()),
         ).thenReturn(
           Right(tNumberParded),
         );
@@ -56,28 +61,32 @@ void main() {
       'should call the InputConverter to validate and convert the string to an unsigned integer',
       () async {
         setUpMockInputConverterSuccess();
+        when(() => mockGetConcreteNumberTrivia(any())).thenAnswer(
+          (_) async => Right(tNumberTrivia),
+        );
 
         bloc.add(GetTriviaForConcreteNumber(tNumberString));
-        await untilCalled(mockInputConverter.stringToUnsignedInteger(any));
+        await untilCalled(
+          () => mockInputConverter.stringToUnsignedInteger(any()),
+        );
 
         verify(
-          mockInputConverter.stringToUnsignedInteger(tNumberString),
+          () => mockInputConverter.stringToUnsignedInteger(tNumberString),
         );
       },
     );
 
     test('should emit error when the input is invalid', () async {
       when(
-        mockInputConverter.stringToUnsignedInteger(any),
+        () => mockInputConverter.stringToUnsignedInteger(any()),
       ).thenReturn(
         Left(InvalidInputFailure()),
       );
 
       final expected = [
-        Empty(),
         Error(message: INVALID_INPUT_FAILURE_MESSAGE),
       ];
-      expectLater(bloc, emitsInOrder(expected));
+      expectLater(bloc.stream, emitsInOrder(expected));
 
       bloc.add(GetTriviaForConcreteNumber(tNumberString));
     });
@@ -86,14 +95,14 @@ void main() {
       'should get data from concrete use case',
       () async {
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(any)).thenAnswer(
+        when(() => mockGetConcreteNumberTrivia(any())).thenAnswer(
           (_) async => Right(tNumberTrivia),
         );
 
         bloc.add(GetTriviaForConcreteNumber(tNumberString));
-        await untilCalled(mockGetConcreteNumberTrivia(any));
+        await untilCalled(() => mockGetConcreteNumberTrivia(any()));
 
-        verify(mockGetConcreteNumberTrivia(Params(number: tNumberParded)));
+        verify(() => mockGetConcreteNumberTrivia(Params(number: tNumberParded)));
       },
     );
 
@@ -101,16 +110,15 @@ void main() {
       'should emit [Loading, Loaded] when data is gotten successfully',
       () async {
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(any)).thenAnswer(
+        when(() => mockGetConcreteNumberTrivia(any())).thenAnswer(
           (_) async => Right(tNumberTrivia),
         );
 
         final expected = [
-          Empty(),
           Loading(),
           Loaded(trivia: tNumberTrivia),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
 
         bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
@@ -120,16 +128,15 @@ void main() {
       'should emit [Loading, Error] when gotting data fails',
       () async {
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(any)).thenAnswer(
+        when(() => mockGetConcreteNumberTrivia(any())).thenAnswer(
           (_) async => Left(ServerFailure()),
         );
 
         final expected = [
-          Empty(),
           Loading(),
           Error(message: SERVER_FAILURE_MESSAGE),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
 
         bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
@@ -140,16 +147,15 @@ void main() {
       for the error when getting data fails''',
       () async {
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(any)).thenAnswer(
+        when(() => mockGetConcreteNumberTrivia(any())).thenAnswer(
           (_) async => Left(CacheFailure()),
         );
 
         final expected = [
-          Empty(),
           Loading(),
           Error(message: CACHE_FAILURE_MESSAGE),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
 
         bloc.add(GetTriviaForConcreteNumber(tNumberString));
       },
@@ -162,30 +168,29 @@ void main() {
     test(
       'should get data from random use case',
       () async {
-        when(mockGetRandomNumberTrivia(any)).thenAnswer(
+        when(() => mockGetRandomNumberTrivia(any())).thenAnswer(
           (_) async => Right(tNumberTrivia),
         );
 
         bloc.add(GetTriviaForRandomNumber());
-        await untilCalled(mockGetRandomNumberTrivia(any));
+        await untilCalled(() => mockGetRandomNumberTrivia(any()));
 
-        verify(mockGetRandomNumberTrivia(NoParams()));
+        verify(() => mockGetRandomNumberTrivia(NoParams()));
       },
     );
 
     test(
       'should emit [Loading, Loaded] when data is gotten successfully',
       () async {
-        when(mockGetRandomNumberTrivia(any)).thenAnswer(
+        when(() => mockGetRandomNumberTrivia(any())).thenAnswer(
           (_) async => Right(tNumberTrivia),
         );
 
         final expected = [
-          Empty(),
           Loading(),
           Loaded(trivia: tNumberTrivia),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
 
         bloc.add(GetTriviaForRandomNumber());
       },
@@ -194,16 +199,15 @@ void main() {
     test(
       'should emit [Loading, Error] when gotting data fails',
       () async {
-        when(mockGetRandomNumberTrivia(any)).thenAnswer(
+        when(() => mockGetRandomNumberTrivia(any())).thenAnswer(
           (_) async => Left(ServerFailure()),
         );
 
         final expected = [
-          Empty(),
           Loading(),
           Error(message: SERVER_FAILURE_MESSAGE),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
 
         bloc.add(GetTriviaForRandomNumber());
       },
@@ -213,16 +217,15 @@ void main() {
       '''should emit [Loading, Error] with a proper message
       for the error when getting data fails''',
       () async {
-        when(mockGetRandomNumberTrivia(any)).thenAnswer(
+        when(() => mockGetRandomNumberTrivia(any())).thenAnswer(
           (_) async => Left(CacheFailure()),
         );
 
         final expected = [
-          Empty(),
           Loading(),
           Error(message: CACHE_FAILURE_MESSAGE),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
 
         bloc.add(GetTriviaForRandomNumber());
       },

@@ -5,16 +5,19 @@ import 'package:clean_architecture_tdd/features/number_trivia/data/data_sources/
 import 'package:clean_architecture_tdd/features/number_trivia/data/models/number_trivia_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:matcher/matcher.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
 
 void main() {
-  NumberTriviaRemoteDataSourceImpl remoteDataSource;
-  MockHttpClient mockHttpClient;
+  setUpAll(() {
+    registerFallbackValue(Uri.parse('https://example.com'));
+  });
+
+  late NumberTriviaRemoteDataSourceImpl remoteDataSource;
+  late MockHttpClient mockHttpClient;
 
   setUp(() {
     mockHttpClient = MockHttpClient();
@@ -25,9 +28,9 @@ void main() {
 
   void setUpMockHttpClientSucess200() {
     when(
-      mockHttpClient.get(
-        any,
-        headers: anyNamed('headers'),
+      () => mockHttpClient.get(
+        any(),
+        headers: any(named: 'headers'),
       ),
     ).thenAnswer(
       (_) async => http.Response(fixture('trivia.json'), 200),
@@ -36,9 +39,9 @@ void main() {
 
   void setUpMockHttpClientFailure404() {
     when(
-      mockHttpClient.get(
-        any,
-        headers: anyNamed('headers'),
+      () => mockHttpClient.get(
+        any(),
+        headers: any(named: 'headers'),
       ),
     ).thenAnswer(
       (_) async => http.Response('Something went wrong', 404),
@@ -62,8 +65,8 @@ void main() {
         remoteDataSource.getConcreteNumberTrivia(tNumber);
 
         verify(
-          mockHttpClient.get(
-            'http://numbersapi.com/$tNumber',
+          () => mockHttpClient.get(
+            Uri.parse('http://numbersapi.com/$tNumber'),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -90,7 +93,7 @@ void main() {
 
         final call = remoteDataSource.getConcreteNumberTrivia;
 
-        expect(() => call(tNumber), throwsA(TypeMatcher<ServerExpection>()));
+        expect(() => call(tNumber), throwsA(TypeMatcher<ServerException>()));
       },
     );
   });
@@ -111,8 +114,8 @@ void main() {
         remoteDataSource.getRandomNumberTrivia();
 
         verify(
-          mockHttpClient.get(
-            'http://numbersapi.com/random',
+          () => mockHttpClient.get(
+            Uri.parse('http://numbersapi.com/random'),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -139,7 +142,7 @@ void main() {
 
         final call = remoteDataSource.getRandomNumberTrivia;
 
-        expect(() => call(), throwsA(TypeMatcher<ServerExpection>()));
+        expect(() => call(), throwsA(TypeMatcher<ServerException>()));
       },
     );
   });
