@@ -16,6 +16,12 @@ class TriviaControlsState extends State<TriviaControls> {
   String? inputString;
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
